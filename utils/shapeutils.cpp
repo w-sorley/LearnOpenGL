@@ -55,6 +55,11 @@ int ShapeUtils::DrawTriangle(){
     int vertexColorLocation = glGetUniformLocation(m_shader->ID, "ourColor");
     m_shader->setInt("texture1", 0);
     m_shader->setInt("texture2", 1);
+
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0));
+    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+    glUniformMatrix4fv(glGetUniformLocation(m_shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
     m_shader->use();
     glUniform4f(vertexColorLocation, 0.0, 0.0, blueValue, 0.0);
     glBindVertexArray(VAO);
