@@ -7,11 +7,12 @@
 #include <stdio.h>
 #include <iostream>
 #include "glutils.h"
+#include "shader.h"
 
 class ShapeUtils
 {
 private:
-    static GLuint program;
+    static Shader* m_shader;
 
 public:
     ShapeUtils(/* args */);

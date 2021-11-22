@@ -1,5 +1,4 @@
 #include "shapeutils.h"
-#include "shadersource.h"
 
 const char *VERTEX_SHADER = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
@@ -19,10 +18,8 @@ const char *FRAGMENT_SHADER = "#version 330 core\n"
         "    FragColor = vec4(vertexColor, 1.0);\n"
         "}\0";
 
-GLuint ShapeUtils::program = 0;
-
 unsigned int VAO;
-
+Shader* ShapeUtils::m_shader;
 int ShapeUtils::init(){
     float vertices[] = {
         0.5f,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -54,20 +51,20 @@ int ShapeUtils::init(){
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-  
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    program = GLUtils::CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    m_shader =new Shader("./shaders/vertex.shader", "./shaders/fragment.shader");
+
+    return 0;
 }
 int ShapeUtils::DrawTriangle(){
 
     float tiemValue = glfwGetTime();
     float blueValue = (sin(tiemValue) / 2.0) + 0.5f;
-    int vertexColorLocation = glGetUniformLocation(program, "ourColor");
-    glUseProgram(program);
+    int vertexColorLocation = glGetUniformLocation(m_shader->ID, "ourColor");
+    m_shader->use();
     glUniform4f(vertexColorLocation, 0.0, 0.0, blueValue, 0.0);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
