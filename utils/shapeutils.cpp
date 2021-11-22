@@ -1,25 +1,7 @@
 #include "shapeutils.h"
 
-const char *VERTEX_SHADER = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec3 aColor;\n"
-        "out vec3 vertexColor;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "    vertexColor = aColor;\n"
-        "}\0";
-        
-const char *FRAGMENT_SHADER = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "in vec3 vertexColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(vertexColor, 1.0);\n"
-        "}\0";
-
 unsigned int VAO;
-unsigned texture;
+unsigned texture1, texture2;
 Shader* ShapeUtils::m_shader;
 int ShapeUtils::init(){
     float vertices[] = {
@@ -59,7 +41,8 @@ int ShapeUtils::init(){
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    texture =  GLUtils::createTexture("./image/box.jpg");
+    texture1 =  GLUtils::createTexture("./image/box.jpg");
+    texture2 =  GLUtils::createTexture("./image/froot.jpg");
 
     m_shader =new Shader("./shaders/vertex.shader", "./shaders/fragment.shader");
 
@@ -70,10 +53,15 @@ int ShapeUtils::DrawTriangle(){
     float tiemValue = glfwGetTime();
     float blueValue = (sin(tiemValue) / 2.0) + 0.5f;
     int vertexColorLocation = glGetUniformLocation(m_shader->ID, "ourColor");
+    m_shader->setInt("texture1", 0);
+    m_shader->setInt("texture2", 1);
     m_shader->use();
     glUniform4f(vertexColorLocation, 0.0, 0.0, blueValue, 0.0);
     glBindVertexArray(VAO);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glBindVertexArray(0);
