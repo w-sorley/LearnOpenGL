@@ -12,10 +12,10 @@ const char *VERTEX_SHADER = "#version 330 core\n"
         
 const char *FRAGMENT_SHADER = "#version 330 core\n"
         "out vec4 FragColor;\n"
-        "in vec4 vertexColor;"
+        "uniform vec4 ourColor;\n"
         "void main()\n"
         "{\n"
-        "    FragColor = vertexColor;\n"
+        "    FragColor = ourColor;\n"
         "}\0";
 
 GLuint ShapeUtils::program = 0;
@@ -62,7 +62,11 @@ int ShapeUtils::init(){
 }
 int ShapeUtils::DrawTriangle(){
 
+    float tiemValue = glfwGetTime();
+    float blueValue = (sin(tiemValue) / 2.0) + 0.5f;
+    int vertexColorLocation = glGetUniformLocation(program, "ourColor");
     glUseProgram(program);
+    glUniform4f(vertexColorLocation, 0.0, 0.0, blueValue, 0.0);
     glBindVertexArray(VAO);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
