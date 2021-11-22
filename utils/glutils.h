@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include "std_image.h"
 
 class GLUtils
 {
@@ -19,5 +20,7 @@ public:
     static GLuint LoadShader(GLenum shaderType, const char *pSource);
     
     static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource);
+
+    static GLuint createTexture(const char *image);
 };
 #endif

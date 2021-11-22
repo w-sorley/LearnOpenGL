@@ -12,9 +12,9 @@ set(UTILS ${PROJECT_SOURCE_DIR}/utils)
 include_directories(${GLAD_H} ${GLFW_H} ${UTILS})
 
 set(GLFW_LINK /usr/local/lib/libglfw.3.3.dylib)
-LINK_LIBRARIES(${GLFW_LINK})
+LINK_LIBRARIES(${GLFW_LINK} )
 
-set(SOURCES glad.c main.cpp ${UTILS}/glutils.cpp ${UTILS}/shapeutils.cpp ${UTILS}/shader.cpp)
+set(SOURCES glad.c std_image.cpp main.cpp ${UTILS}/glutils.cpp ${UTILS}/shapeutils.cpp ${UTILS}/shader.cpp)
 add_executable(output ${SOURCES})
 
 if (APPLE)
