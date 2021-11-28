@@ -44,7 +44,7 @@ int main(int argc, const char *argv[])
 
         // 渲染执行
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //设置清空屏幕所使用的颜色
-        glClear(GL_COLOR_BUFFER_BIT); // 清除颜色缓冲(屏幕被设置为上面设置的颜色)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 清除颜色缓冲(屏幕被设置为上面设置的颜色)
         ShapeUtils::DrawTriangle();
 
         glfwSwapBuffers(window);
