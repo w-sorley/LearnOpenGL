@@ -101,6 +101,12 @@ int ShapeUtils::DrawTriangle(){
         glm::vec3( 1.5f,  0.2f, -1.5f), 
         glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
+
+    float radius = 0.5f;
+    float camX= sin(glfwGetTime()) * radius;
+    float camZ = cos(glfwGetTime()) * radius;
+    glm::mat4 lookAt = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
+    m_shader->setMat4("lookAt", lookAt);
     for(int i = 0; i < 10; i++){
         glm::mat4 model = glm::mat4(1.0f); 
         model = glm::translate(model, cubePositions[i] / 4.0f); 
