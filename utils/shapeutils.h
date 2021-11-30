@@ -22,8 +22,9 @@ public:
     ShapeUtils(/* args */);
     ~ShapeUtils();
 
-    static int DrawTriangle();
+    static int DrawTriangle(GLFWwindow *window);
     static int init();
+    static int updateCameraPos(GLFWwindow *window);
 };
 
 #endif

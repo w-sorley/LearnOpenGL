@@ -75,12 +75,39 @@ int ShapeUtils::init(){
 
     return 0;
 }
-int ShapeUtils::DrawTriangle(){
+
+float deltaTime = 0.0f;
+float lastTime  = 0.0f;
+glm::vec3 movePos = glm::vec3(0.0f);
+int ShapeUtils::updateCameraPos(GLFWwindow *window) {
+    float current = glfwGetTime();
+    deltaTime = current - lastTime;
+    lastTime = current;
+    float speed = 0.25f * deltaTime;
+
+
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  0.3f);
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 0.1f,  0.0f);
+    
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        movePos += speed * cameraFront; 
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        movePos -= speed * cameraFront; 
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        movePos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        movePos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+
+    cameraPos += movePos;
+    glm::mat4 lookAt = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); 
+    m_shader->setMat4("lookAt", lookAt);
+}
+
+int ShapeUtils::DrawTriangle(GLFWwindow *window){
 
     m_shader->setInt("texture1", 0);
     m_shader->setInt("texture2", 1);
-
-
 
     m_shader->use();
     glBindVertexArray(VAO);
@@ -91,7 +118,7 @@ int ShapeUtils::DrawTriangle(){
 
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3( 0.0f,  0.5f, -0.5f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
         glm::vec3(-3.8f, -2.0f, -12.3f),  
         glm::vec3( 2.4f, -0.4f, -3.5f),  
@@ -102,18 +129,23 @@ int ShapeUtils::DrawTriangle(){
         glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
 
-    float radius = 0.5f;
-    float camX= sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
-    glm::mat4 lookAt = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
-    m_shader->setMat4("lookAt", lookAt);
+    updateCameraPos(window);
+
+    glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    glm::mat4 projection    = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)7.0f / (float)8.0f, 0.1f, 100.0f);
+    view       = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    // pass transformation matrices to the shader
+    m_shader->setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+    m_shader->setMat4("view", view);
+
     for(int i = 0; i < 10; i++){
-        glm::mat4 model = glm::mat4(1.0f); 
-        model = glm::translate(model, cubePositions[i] / 4.0f); 
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, .2f));
-        float angle = 20.0f * i; 
+        glm::mat4 model = glm::mat4(1.0f);
+        float angle = 20.0f * (i); 
+        model = glm::translate(model, cubePositions[i]);
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        glUniformMatrix4fv(glGetUniformLocation(m_shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        model  = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        m_shader->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
