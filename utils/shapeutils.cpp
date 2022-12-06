@@ -3,18 +3,13 @@
 unsigned int VAO;
 unsigned texture1, texture2;
 Shader* ShapeUtils::m_shader;
-
+Camera* ShapeUtils::m_camera;
 
 double lastXPos = 0;
 double lastYPos = 0;
 bool firstFrame = true;
-double yaw = 0;
-double patch = 0;
 float deltaTime = 0.0f;
 float lastTime  = 0.0f;
-glm::vec3 movePos = glm::vec3(0.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -10.0f);
-float fov = 45.0f;
 void mouse_callback(GLFWwindow *window, double xPos, double yPos){
 
     if(firstFrame)
@@ -27,35 +22,12 @@ void mouse_callback(GLFWwindow *window, double xPos, double yPos){
     double yOffset = lastYPos - yPos;
     lastYPos = yPos;
     lastXPos = xPos;
-    // if(firstFrame) {
-    //     firstFrame = false;
-    //     return;
-    // }
 
-    float sensitivity = 0.05f;
-    xOffset *= sensitivity;
-    yOffset *= sensitivity;
-    yaw   += xOffset;
-    patch += yOffset;
-    if(yaw > 89.0f) yaw = 89.0f;
-    if(patch < -89.0f) patch = -89.0f;
-
-    glm::vec3 front = glm::vec3(0.0f);
-    std::cout << "patch = " << patch << ", yaw = " << yaw << std::endl;
-    front.x = cos(glm::radians(patch)) * cos(glm::radians(yaw));
-    front.y = sin(glm::radians(patch));
-    front.z = 0 - sin(glm::radians(yaw)) * cos(glm::radians(patch));
-    cameraFront = glm::normalize(front);
-    std::cout << "callback : x=" << cameraFront.x << ", y=" << cameraFront.y << ", z=" << cameraFront.z << std::endl;
+    ShapeUtils::m_camera->ProcessMouseMovement(xOffset, yOffset);
 }
 
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset){
-    if(fov >=1.0f && fov <= 45.0f)
-        fov -= yoffset;
-    if(fov < 1.0)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+    ShapeUtils::m_camera->ProcessMouseScroll(yoffset);
 }
 int ShapeUtils::init(GLFWwindow *window){
     float vertices[] = {
@@ -131,8 +103,8 @@ int ShapeUtils::init(GLFWwindow *window){
     texture1 =  GLUtils::createTexture("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/image/box.jpg");
     texture2 =  GLUtils::createTexture("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/image/froot.jpg");
 
-    m_shader =new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/vertex.shader", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/fragment.shader");
-
+    m_shader = new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/vertex.shader", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/fragment.shader");
+    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     return 0;
 }
 
@@ -140,25 +112,17 @@ int ShapeUtils::updateCameraPos(GLFWwindow *window) {
     float current = glfwGetTime();
     deltaTime = current - lastTime;
     lastTime = current;
-    float speed = 0.25f * deltaTime;
 
-
-    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  0.0f);
-
-    glm::vec3 cameraUp    = glm::vec3(0.0f, 0.1f,  0.0f);
-    
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        movePos += speed * cameraFront; 
+        m_camera->ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        movePos -= speed * cameraFront; 
+        m_camera->ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        movePos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+        m_camera->ProcessKeyboard(LEFT, deltaTime);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        movePos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+        m_camera->ProcessKeyboard(RIGHT, deltaTime);
 
-    cameraPos += movePos;
-    glm::mat4 lookAt = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); 
-    m_shader->setMat4("lookAt", lookAt);
+    m_shader->setMat4("lookAt", m_camera->GetViewMatrix());
     return 0;
 }
 
@@ -168,8 +132,8 @@ int ShapeUtils::DrawTriangle(GLFWwindow *window){
 
     m_shader->setInt("texture1", 0);
     m_shader->setInt("texture2", 1);
-
     m_shader->use();
+
     glBindVertexArray(VAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -193,7 +157,9 @@ int ShapeUtils::DrawTriangle(GLFWwindow *window){
 
     glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
     glm::mat4 projection    = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(fov), (float)7.0f / (float)8.0f, 0.1f, 100.0f);
+    // projection decide what can show on the screen
+    projection = glm::perspective(glm::radians(m_camera->Zoom), (float)7.0f / (float)8.0f, 0.1f, 100.0f);
+    // by default, the model at origin point
     view       = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     // pass transformation matrices to the shader
     m_shader->setMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.

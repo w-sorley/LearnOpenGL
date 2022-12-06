@@ -12,15 +12,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include<camera.h>
+
 
 class ShapeUtils
 {
 private:
     static Shader* m_shader;
 
+
 public:
     ShapeUtils(/* args */);
     ~ShapeUtils();
+
+    static Camera* m_camera;
 
     static int DrawTriangle(GLFWwindow *window);
     static int init(GLFWwindow *window);
