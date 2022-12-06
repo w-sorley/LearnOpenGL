@@ -35,8 +35,11 @@ int main(int argc, const char *argv[])
     }
 
     glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
-    ShapeUtils::init();
+    ShapeUtils::init(window);
+ 
+
     // 循环使窗口保持
     while (!glfwWindowShouldClose(window))
     {
@@ -48,6 +51,7 @@ int main(int argc, const char *argv[])
         ShapeUtils::DrawTriangle(window);
 
         glfwSwapBuffers(window);
+        // 检查是否触发相关事件
         glfwPollEvents();
     }
 
@@ -55,6 +59,7 @@ int main(int argc, const char *argv[])
     return 0;
 }
 
+// window大小改变时的回调
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);   
 }

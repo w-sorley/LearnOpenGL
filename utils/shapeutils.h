@@ -23,7 +23,7 @@ public:
     ~ShapeUtils();
 
     static int DrawTriangle(GLFWwindow *window);
-    static int init();
+    static int init(GLFWwindow *window);
     static int updateCameraPos(GLFWwindow *window);
 };
 
