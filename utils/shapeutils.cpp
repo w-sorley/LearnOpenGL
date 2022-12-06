@@ -68,10 +68,10 @@ int ShapeUtils::init(){
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    texture1 =  GLUtils::createTexture("./image/box.jpg");
-    texture2 =  GLUtils::createTexture("./image/froot.jpg");
+    texture1 =  GLUtils::createTexture("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/image/box.jpg");
+    texture2 =  GLUtils::createTexture("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/image/froot.jpg");
 
-    m_shader =new Shader("./shaders/vertex.shader", "./shaders/fragment.shader");
+    m_shader =new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/vertex.shader", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/fragment.shader");
 
     return 0;
 }
