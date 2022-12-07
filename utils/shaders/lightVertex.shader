@@ -9,5 +9,5 @@ uniform vec3 lightColor;
 void main()
 {
     gl_Position = model * vec4(aPos, 1.0);
-TexColor = lightColor;
+    TexColor = lightColor;
 }
