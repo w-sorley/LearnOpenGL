@@ -22,13 +22,3 @@ public:
     void setFloat(const std::string &name,float value) const;
 };
 #endif
-
-
-
-
-// "#version 330 core\n"
-//     "layout (location = 0) in vec3 aPos;\n"
-//     "void main()\n"
-//     "{\n"
-//     "    \n"
-//     "}\0";

@@ -16,13 +16,14 @@
 class ShapeUtils
 {
 private:
-    static Shader* m_shader;
+    static Shader* m_objectShader;
+    static Shader* m_lightShader;
 
 public:
     ShapeUtils(/* args */);
     ~ShapeUtils();
 
-    static int DrawTriangle();
+    static int Draw();
     static int init();
 };
 
