@@ -85,16 +85,28 @@ int ShapeUtils::init(){
 int ShapeUtils::Draw(){
 
     glm::vec3 lightPos = glm::vec3(0.2f, 0.8f, -0.7f);
-    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightColor;
+    lightColor.x = sin(glfwGetTime() * 2.0f);
+    lightColor.y = sin(glfwGetTime() * 0.7f);
+    lightColor.z = sin(glfwGetTime() * 1.3f);
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.8f); // 降低影响
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.4f); // 很低的影响
+
     // draw object
      m_objectShader->use();
     // 更新一个uniform之前你必须先使用程序（调用glUseProgram)，因为它是在当前激活的着色器程序中设置uniform的
-    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "lightPos"), 1,  glm::value_ptr(lightPos));
-    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "lightColor"), 1,  glm::value_ptr(lightColor));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.position"), 1,  glm::value_ptr(lightPos));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.ambient"), 1,  glm::value_ptr(ambientColor));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.diffuse"), 1,  glm::value_ptr(diffuseColor));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.specular"), 1,  glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+
     glm::vec3 viewPos = glm::vec3(-0.6f, -0.4f, -0.7f);
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "viewPos"), 1,  glm::value_ptr(viewPos));
     glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
-    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "objectColor"), 1,  glm::value_ptr(objectColor));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "material.ambient"), 1,  glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "material.diffuse"), 1,  glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "material.specular"), 1,  glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
+    m_objectShader->setFloat("material.shininess", 32.0f);
     glm::mat4 model = glm::mat4(1.0f); 
     model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); 
     model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
