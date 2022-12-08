@@ -6,8 +6,10 @@ out vec3 TexColor;
 
 uniform mat4 model;
 uniform vec3 lightColor;
+uniform mat4 view;
+uniform mat4 projection;
 void main()
 {
-    gl_Position = model * vec4(aPos, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
     TexColor = lightColor;
 }

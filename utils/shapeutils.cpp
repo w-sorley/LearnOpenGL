@@ -95,9 +95,22 @@ int ShapeUtils::init(){
 
     return 0;
 }
+
+glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+};
 int ShapeUtils::Draw(){
 
-    glm::vec3 lightPos = glm::vec3(0.2f, 0.8f, -0.7f);
+    glm::vec3 lightPos = glm::vec3(0.2f, 0.8f, -8.0f);
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     // lightColor.x = sin(glfwGetTime() * 2.0f);
     // lightColor.y = sin(glfwGetTime() * 0.7f);
@@ -105,10 +118,15 @@ int ShapeUtils::Draw(){
     glm::vec3 diffuseColor = lightColor   * glm::vec3(0.8f); // 降低影响
     glm::vec3 ambientColor = diffuseColor * glm::vec3(0.4f); // 很低的影响
 
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
+
     // draw object
      m_objectShader->use();
     // 更新一个uniform之前你必须先使用程序（调用glUseProgram)，因为它是在当前激活的着色器程序中设置uniform的
-    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.position"), 1,  glm::value_ptr(lightPos));
+    // glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.position"), 1,  glm::value_ptr(lightPos));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.direction"), 1,  glm::value_ptr(glm::vec3( 30.0f, 1.0f, -30.0f)));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.ambient"), 1,  glm::value_ptr(ambientColor));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.diffuse"), 1,  glm::value_ptr(diffuseColor));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.specular"), 1,  glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
@@ -118,11 +136,8 @@ int ShapeUtils::Draw(){
     glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "material.specular"), 1,  glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
     m_objectShader->setFloat("material.shininess", 32.0f);
-
-    glm::mat4 model = glm::mat4(1.0f); 
-    model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); 
-    model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
-    glUniformMatrix4fv(glGetUniformLocation(m_objectShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(m_objectShader->ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(m_objectShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     // 使用时需要先激活再绑定
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -130,14 +145,27 @@ int ShapeUtils::Draw(){
     glBindTexture(GL_TEXTURE_2D, specularMap);
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        glm::mat4 objModel = glm::mat4(1.0f);
+        objModel = glm::translate(objModel, cubePositions[i]);
+        float angle = 20.0f * (i + 1);
+        objModel = glm::rotate(objModel, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        glUniformMatrix4fv(glGetUniformLocation(m_objectShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     // draw light 
     m_lightShader->use();
     glUniform3fv(glGetUniformLocation(m_lightShader->ID, "lightColor"), 1,  glm::value_ptr(lightColor));
+    glm::mat4 model = glm::mat4(1.0f); 
+    model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); 
+    model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.2f));   
     glUniformMatrix4fv(glGetUniformLocation(m_lightShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(m_lightShader->ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(m_lightShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glBindVertexArray(lightVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 

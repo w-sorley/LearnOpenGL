@@ -9,10 +9,12 @@ out vec3 objectPos;
 out vec2 TexCoords;
 
 uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 void main()
 {
-    gl_Position = model * vec4(aPos, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
     Normal = aNormal;
-    objectPos = vec3(model * vec4(aPos, 1.0));
+    objectPos = vec3(view * model * vec4(aPos, 1.0));
     TexCoords = aTexCoords;
 }
