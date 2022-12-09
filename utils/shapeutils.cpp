@@ -125,11 +125,14 @@ int ShapeUtils::Draw(){
     // draw object
      m_objectShader->use();
     // 更新一个uniform之前你必须先使用程序（调用glUseProgram)，因为它是在当前激活的着色器程序中设置uniform的
-    // glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.position"), 1,  glm::value_ptr(lightPos));
-    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.direction"), 1,  glm::value_ptr(glm::vec3( 30.0f, 1.0f, -30.0f)));
+    glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.position"), 1,  glm::value_ptr(lightPos));
+    // glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.direction"), 1,  glm::value_ptr(glm::vec3( 30.0f, 1.0f, -30.0f)));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.ambient"), 1,  glm::value_ptr(ambientColor));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.diffuse"), 1,  glm::value_ptr(diffuseColor));
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "light.specular"), 1,  glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    m_objectShader->setFloat("light.constant",  1.0f);
+    m_objectShader->setFloat("light.linear",    0.09f);
+    m_objectShader->setFloat("light.quadratic", 0.032f);
 
     glm::vec3 viewPos = glm::vec3(-0.6f, -0.4f, -0.7f);
     glUniform3fv(glGetUniformLocation(m_objectShader->ID, "viewPos"), 1,  glm::value_ptr(viewPos));
