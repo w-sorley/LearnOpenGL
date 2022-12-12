@@ -22,5 +22,7 @@ public:
     static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource);
 
     static GLuint createTexture(const char *image);
+
+    static unsigned int  createTextureFromFile(const char *path, const char *dir);
 };
 #endif

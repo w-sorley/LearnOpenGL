@@ -9,17 +9,21 @@ set(GLAD_H ${PROJECT_SOURCE_DIR}/include)
 set(GLFW_H /usr/local/include)
 set(UTILS ${PROJECT_SOURCE_DIR}/utils)
 
+
 include_directories(${GLAD_H} ${GLFW_H} ${UTILS})
 
 set(GLFW_LINK /usr/local/lib/libglfw.3.3.dylib)
-LINK_LIBRARIES(${GLFW_LINK} )
+set(ASSIMP_LINK /usr/local/lib/libassimp.dylib)
+LINK_LIBRARIES(${GLFW_LINK} ${ASSIMP_LINK})
 
-set(SOURCES glad.c std_image.cpp main.cpp ${UTILS}/glutils.cpp ${UTILS}/shapeutils.cpp ${UTILS}/shader.cpp)
+set(SOURCES glad.c std_image.cpp main.cpp ${UTILS}/glutils.cpp ${UTILS}/shapeutils.cpp ${UTILS}/shader.cpp ${UTILS}/mesh.cpp ${UTILS}/model.cpp)
 add_executable(output ${SOURCES})
 
 if (APPLE)
     target_link_libraries(output "-framework OpenGL")
+
 endif()
+
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -8,16 +8,20 @@
 #include <iostream>
 #include "glutils.h"
 #include "shader.h"
+#include "model.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 
 class ShapeUtils
 {
 private:
     static Shader* m_objectShader;
-    static Shader* m_lightShader;
+    static Model*  m_model;
 
 public:
     ShapeUtils(/* args */);
