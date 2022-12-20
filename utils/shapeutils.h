@@ -27,6 +27,8 @@ private:
     static unsigned int planeVAO;
     static unsigned int cubeTexture;
     static unsigned int floorTexture;
+    static unsigned int grassVAO;
+    static unsigned int grassTexture;
 
 public:
     ShapeUtils(/* args */);
