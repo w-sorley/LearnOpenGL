@@ -21,6 +21,7 @@ class ShapeUtils
 {
 private:
     static Shader* m_objectShader;
+    static Shader* m_singleColorShader;
     static Model*  m_model;
     static unsigned int cubeVAO;
     static unsigned int planeVAO;
