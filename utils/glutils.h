@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "std_image.h"
+#include<vector>
 
 class GLUtils
 {
@@ -22,6 +23,7 @@ public:
     static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource);
 
     static GLuint createTexture(const char *image);
+    static GLuint createCubeTexture(std::vector<std::string> files);
 
     static unsigned int  createTextureFromFile(const char *path, const char *dir);
 };

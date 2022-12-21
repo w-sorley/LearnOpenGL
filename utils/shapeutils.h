@@ -21,18 +21,11 @@ class ShapeUtils
 {
 private:
     static Shader* m_objectShader;
-    static Shader* m_singleColorShader;
-    static Shader* m_rectangleShader;
-    static Model*  m_model;
     static unsigned int cubeVAO;
-    static unsigned int planeVAO;
     static unsigned int cubeTexture;
-    static unsigned int floorTexture;
-    static unsigned int grassVAO;
-    static unsigned int grassTexture;
-    static  unsigned int fbo;
-    static unsigned int textColorBuffer;
-    static unsigned int rectangleVAO;
+    static Shader* m_skyShader;
+    static unsigned int skyVAO;
+    static unsigned int skyTexture;
 
 public:
     ShapeUtils(/* args */);
