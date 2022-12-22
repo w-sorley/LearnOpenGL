@@ -144,21 +144,31 @@ int ShapeUtils::init(){
     m_skyShader->use();
     m_skyShader->setInt("skybox", 0);
 
+    unsigned int blockIndex = glGetUniformBlockIndex(m_objectShader->ID, "Matrices");
+    glUniformBlockBinding(m_objectShader->ID, blockIndex, 0);  // 绑定到绑定点0，与ubo的绑定一致才能获得填充数据
+
+    unsigned int ubo;
+    glGenBuffers(1, &ubo);
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW); // 分配数据
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 2 * sizeof(glm::mat4)); // 将指定范围绑定到绑定点0
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    glm::mat4 projection = glm::perspective(glm::radians(100.0f), 800.0f / 600.0f, 0.1f, 100.0f); // 填充数据
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+    glm::mat4 view = glm::mat4(1.0f);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     return 0;
 }
 
 int ShapeUtils::Draw(){
     
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
-    // view = glm::translate(view, glm::vec3(-0.4f, 0.0f, -3.0f));  
-    // view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f)); 
-    glm::mat4 projection = glm::perspective(glm::radians(100.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
     // cubes
      m_objectShader->use();
-    m_objectShader->setMat4("view", view);
-    m_objectShader->setMat4("projection", projection);
     glUniform3f(glGetUniformLocation(m_objectShader->ID, "cameraPos"), 0.0f, 0.0f, 0.0f);
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);

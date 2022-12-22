@@ -7,9 +7,14 @@ out V_OUT {
   vec3 Position;
 } vs_out;
 
+
+layout (std140) uniform Matrices   //uniform 缓冲对象，名称为Matrices
+{
+  mat4 view;
+  mat4 projection;
+};
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+
 
 void main()
 {   vs_out.Normal = mat3(transpose(inverse(model))) * aNormal;
