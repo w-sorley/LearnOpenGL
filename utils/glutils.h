@@ -20,7 +20,7 @@ public:
     
     static GLuint LoadShader(GLenum shaderType, const char *pSource);
     
-    static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource);
+    static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource, const char *pGeoShaderSource);
 
     static GLuint createTexture(const char *image);
     static GLuint createCubeTexture(std::vector<std::string> files);

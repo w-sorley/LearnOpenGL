@@ -19,21 +19,26 @@ GLuint GLUtils::LoadShader(GLenum shaderType, const char *pSource) {
     return shader;
 }
 
-GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource){
+GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource, const char *pGeoShaderSource){
     unsigned int program = 0;
     GLuint vertextShader = LoadShader(GL_VERTEX_SHADER, pVertexShaderSource);
     if(!vertextShader) return program;
     GLuint fragmentShader = LoadShader(GL_FRAGMENT_SHADER, pFragShaderSource);
     if(!fragmentShader) return program;
+    GLuint geoShader = LoadShader(GL_GEOMETRY_SHADER, pGeoShaderSource);
+    if(!geoShader) return program;
 
     program = glCreateProgram();
     if(program) {
         glAttachShader(program, vertextShader);
         glAttachShader(program, fragmentShader);
+        glAttachShader(program, geoShader);
         glLinkProgram(program);
         glDetachShader(program, vertextShader);
-        glDetachShader(program, program);
+        glDetachShader(program, fragmentShader);
+        glDetachShader(program, geoShader);
 
+        
         int status;
         glGetProgramiv(program, GL_LINK_STATUS, &status);
         if(!status) {
@@ -45,6 +50,8 @@ GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFrag
     }
     glDeleteShader(vertextShader);
     glDeleteShader(fragmentShader);
+    glDeleteShader(geoShader);
+
 
     return program;
 }

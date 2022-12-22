@@ -124,9 +124,9 @@ int ShapeUtils::init(){
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glBindVertexArray(0);
 
-    m_objectShader = new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/depthTesting.vs", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/depthTesting.fs");
+    m_objectShader = new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/depthTesting.vs", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/depthTesting.fs",
+    "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/geometry.shader");
 
-    m_skyShader = new Shader("/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/skybox.vs", "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/shaders/skybox.fs");
     vector<std::string> faces
     {
         "/Users/w_sorley/Workspace/C_CPP/OpenGL/utils/image/skybox/right.jpg",
@@ -141,8 +141,6 @@ int ShapeUtils::init(){
 
     m_objectShader->use();
     m_objectShader->setInt("skybox", 0);
-    m_skyShader->use();
-    m_skyShader->setInt("skybox", 0);
 
     unsigned int blockIndex = glGetUniformBlockIndex(m_objectShader->ID, "Matrices");
     glUniformBlockBinding(m_objectShader->ID, blockIndex, 0);  // 绑定到绑定点0，与ubo的绑定一致才能获得填充数据
@@ -175,20 +173,8 @@ int ShapeUtils::Draw(){
     glBindTexture(GL_TEXTURE_2D, skyTexture); 	
     model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -2.0f));
     m_objectShader->setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_POINTS, 0, 36);
 
-    // glDepthMask(GL_FALSE);  // 禁止写入深度信息，保证之后绘制的所有物体都不会被天空盒遮挡
-    // glDepthFunc(GL_LEQUAL); //  小于等于1均通过
-    // glBindVertexArray(skyVAO);
-    // m_skyShader->use();
-    // view = glm::mat4(1.0f);
-    // m_skyShader->setMat4("view", view);
-    // m_skyShader->setMat4("projection", projection);
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_CUBE_MAP, skyTexture);
-    // glDrawArrays(GL_TRIANGLES, 0, 36);
-    // // glDepthMask(GL_TRUE);
-    //  glDepthFunc(GL_LESS); 
 
 
 

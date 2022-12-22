@@ -17,7 +17,7 @@ private:
 public:
     unsigned int ID;
     
-    Shader(const GLchar* vertextPath, const GLchar* fragmentPath);
+    Shader(const GLchar* vertextPath, const GLchar* fragmentPath, const GLchar* geoPath);
 
     void use();
     void setBool(const std::string &name, bool value) const;

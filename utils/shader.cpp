@@ -1,33 +1,43 @@
 #include "shader.h"
 
-Shader::Shader(const GLchar* vertextPath, const GLchar* fragmentPath){
+Shader::Shader(const GLchar* vertextPath, const GLchar* fragmentPath, const GLchar* geoPath){
     std::string vertexCode;
     std::string fragmentCode;
+    std::string geoCode;
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
+    std::ifstream gShaderFile;
     vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
 
     try
     {
         vShaderFile.open(vertextPath);
         fShaderFile.open(fragmentPath);
+        gShaderFile.open(geoPath);
 
-        std::stringstream vShaderStream, fShaderStream;
+        std::stringstream vShaderStream, fShaderStream, gShaderStream;
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();
+        gShaderStream << gShaderFile.rdbuf();
+
         vShaderFile.close();
-        fShaderFile.close();
+        fShaderFile.close(); 
+        gShaderFile.close(); 
+
 
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
+        geoCode = gShaderStream.str();
     }
     catch(std::ifstream::failure e)
     {
         std::cerr << "ERROR::SHADER::File read failed!" << std::endl;
     }
 
-    this->ID = GLUtils::CreateProgram(vertexCode.c_str(), fragmentCode.c_str());   
+    this->ID = GLUtils::CreateProgram(vertexCode.c_str(), fragmentCode.c_str(), geoCode.c_str());   
 }
 
 void Shader::use(){
