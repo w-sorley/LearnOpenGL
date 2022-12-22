@@ -163,9 +163,9 @@ int ShapeUtils::Draw(){
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, skyTexture); 	
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+    model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -2.0f));
     m_objectShader->setMat4("model", model);
-    glDrawArrays(GL_POINTS, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     // glDepthMask(GL_FALSE);  // 禁止写入深度信息，保证之后绘制的所有物体都不会被天空盒遮挡
     // glDepthFunc(GL_LEQUAL); //  小于等于1均通过
