@@ -11,6 +11,8 @@ unsigned int ShapeUtils::skyTexture;
 int ShapeUtils::init(){
     glEnable(GL_DEPTH_TEST); // 开启深度测试
 
+    glEnable(GL_PROGRAM_POINT_SIZE); // 开启修改点图元的大小
+
    float cubeVertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
      0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
@@ -161,22 +163,22 @@ int ShapeUtils::Draw(){
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, skyTexture); 	
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -2.4f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
     m_objectShader->setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_POINTS, 0, 36);
 
     // glDepthMask(GL_FALSE);  // 禁止写入深度信息，保证之后绘制的所有物体都不会被天空盒遮挡
-    glDepthFunc(GL_LEQUAL); //  小于等于1均通过
-    glBindVertexArray(skyVAO);
-    m_skyShader->use();
-    view = glm::mat4(1.0f);
-    m_skyShader->setMat4("view", view);
-    m_skyShader->setMat4("projection", projection);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skyTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    // glDepthMask(GL_TRUE);
-     glDepthFunc(GL_LESS); 
+    // glDepthFunc(GL_LEQUAL); //  小于等于1均通过
+    // glBindVertexArray(skyVAO);
+    // m_skyShader->use();
+    // view = glm::mat4(1.0f);
+    // m_skyShader->setMat4("view", view);
+    // m_skyShader->setMat4("projection", projection);
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, skyTexture);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
+    // // glDepthMask(GL_TRUE);
+    //  glDepthFunc(GL_LESS); 
 
 
 

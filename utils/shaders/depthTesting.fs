@@ -15,10 +15,10 @@ void main()
     // vec4 textureColor  = texture(skybox, reflectDir);
 
     // 计算折射
-    float ratio = 1.0/1.52;
-    vec3 viewDir = normalize(Position - cameraPos);
-    vec3 refractDir = refract(viewDir, normalize(Normal), ratio);
-    vec4 textureColor  = texture(skybox, refractDir);
+    // float ratio = 1.0/1.52;
+    // vec3 viewDir = normalize(Position - cameraPos);
+    // vec3 refractDir = refract(viewDir, normalize(Normal), ratio);
+    // vec4 textureColor  = texture(skybox, refractDir);
 
-    FragColor = vec4(textureColor.rgb, 1.0);
+    FragColor = vec4(1.0, 1.0, 1.0, 0.5);
 }
