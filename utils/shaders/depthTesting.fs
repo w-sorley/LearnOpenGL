@@ -19,7 +19,11 @@ void main()
     // vec3 viewDir = normalize(Position - cameraPos);
     // vec3 refractDir = refract(viewDir, normalize(Normal), ratio);
     // vec4 textureColor  = texture(skybox, refractDir);
-    if (gl_FragCoord.x < 300)
+    // if (gl_FragCoord.x < 300)
+    //     FragColor = vec4(1.0, 0.0, 0.0, 0.5);
+    // else 
+    //     FragColor = vec4(0.0, 1.0, 0.0, 0.5);
+    if (gl_FrontFacing)
         FragColor = vec4(1.0, 0.0, 0.0, 0.5);
     else 
         FragColor = vec4(0.0, 1.0, 0.0, 0.5);
