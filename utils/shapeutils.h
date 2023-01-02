@@ -21,6 +21,7 @@ class ShapeUtils
 {
 private:
     static Shader* m_objectShader;
+    static Shader* m_plantShader;
     static Model*  m_model;
     static Model* m_rockModel;
     static glm::mat4* m_modelMatrices;

@@ -17,12 +17,16 @@
 
 class Model {
 public:
+    vector<Mesh> meshes;
+    vector<Texture> textures_loaded;
+
     Model(char *path);
     void Draw(Shader &shader);
+
 private:
-    vector<Mesh> meshes;
+
     string directory;
-    vector<Texture> textures_loaded;
+
     void loadModel(string path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
