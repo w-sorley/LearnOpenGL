@@ -59,7 +59,7 @@ void Mesh::Draw(Shader &shader) {
         } else {
             std::cout << "WARN: UNKNOWN TEXTURE TYPE:" << type << "!" << std::endl;
         }
-        std::cout << "name = " << (type + sampleIndex) << std::endl;
+        // std::cout << "name = " << (type + sampleIndex) << std::endl;
         shader.setInt((type + sampleIndex).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].ID);
     }

@@ -22,6 +22,9 @@ class ShapeUtils
 private:
     static Shader* m_objectShader;
     static Model*  m_model;
+    static Model* m_rockModel;
+    static glm::mat4* m_modelMatrices;
+    static unsigned int m_amount;
 
 public:
     ShapeUtils(/* args */);
